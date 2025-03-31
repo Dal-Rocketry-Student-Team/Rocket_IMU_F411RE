@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "lsm6dsr_reg.c"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -65,6 +66,12 @@ static void MX_SPI1_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/*
+===============================
+LSM6DSR COMMUNICATION FUNCTIONS
+===============================
+*/
+
 void lsm6dsr_writereg(SPI_HandleTypeDef *hspi, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN, uint8_t reg, uint8_t data){
   uint8_t txbuffer[2];
   txbuffer[0] = reg & 0x7f;   // 0x7f is 01111111, which is the write bit
@@ -88,17 +95,10 @@ uint8_t lsm6dsr_readreg(SPI_HandleTypeDef *hspi, GPIO_TypeDef* CS_PORT, uint16_t
   return rxbuffer[1];
 }
 
-// To redirect the printf to output to the UART instead so I can see it in putty
-int __io_putchar(int ch)
-{
-    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
-    return ch;
-}
-
 /*
-================
+===============
 SERVO FUNCTIONS
-================
+===============
 */
 void Servo_SetAngle(TIM_HandleTypeDef *htim, uint32_t Channel, float angle)
 {
@@ -113,7 +113,7 @@ void Servo_SetAngle(TIM_HandleTypeDef *htim, uint32_t Channel, float angle)
 
 void Servo_Sweep_Demo(TIM_HandleTypeDef *htim, uint32_t Channel)
 {
-    const int delay_ms = 20;  // Adjust this for speed of sweep
+    const int delay_ms = 10;  // Adjust this for speed of sweep
     float angle;
 
     // 0° to -90°
@@ -138,6 +138,16 @@ void Servo_Sweep_Demo(TIM_HandleTypeDef *htim, uint32_t Channel)
         HAL_Delay(delay_ms);
     }
 }
+
+// To redirect the printf to output to the UART instead so I can see it in putty
+int __io_putchar(int ch)
+{
+    HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
+    return ch;
+}
+
+// Making an instance of the ctx_t struct to use in accessing the lsm6dsr
+stmdev_ctx_t lsm6dsr_ctx;
 
 /* USER CODE END 0 */
 
@@ -177,15 +187,17 @@ int main(void)
 
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
 
-  int increment = 7500;
+  // int increment = 7500;
 
   // Contains the value read from the specified register
   uint8_t whoami = 0;
 
-  // This contains debug messages to send to the UART
-  char* msg = 0;
   int correct = 0;
   int incorrect = 0;
+
+  // Setup lsm6dsr_ctx correctly for thios device setup
+  lsm6dsr_ctx.handle = &hspi1;
+  lsm6dsr_ctx.mdelay = HAL_Delay;
 
   /* USER CODE END 2 */
 
@@ -194,9 +206,9 @@ int main(void)
   while (1)
   {
     
-    Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
-
-    whoami = lsm6dsr_readreg(&hspi1, Chip_Select_GPIO_Port, Chip_Select_Pin, 0x0f);
+    // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
+    // lsm6dsr_device_id_get(&lsm6dsr_ctx, &whoami);
+    whoami = lsm6dsr_readreg(&hspi1, Chip_Select_GPIO_Port, Chip_Select_Pin, LSM6DSR_WHO_AM_I);
 
     if (whoami == 0x6b){
       printf("Success! Who am I register value: 0x%x\r\n", whoami);
