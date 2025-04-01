@@ -18,13 +18,14 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "lsm6dsr_reg.c"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+
+#include "lsm6dsr_reg.h" // LSM6DSR driver header file
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -67,32 +68,33 @@ static void MX_SPI1_Init(void);
 /* USER CODE BEGIN 0 */
 
 /*
-===============================
-LSM6DSR COMMUNICATION FUNCTIONS
-===============================
+================================
+PLATFORM COMMUNICATION FUNCTIONS
+================================
 */
 
-void lsm6dsr_writereg(SPI_HandleTypeDef *hspi, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN, uint8_t reg, uint8_t data){
-  uint8_t txbuffer[2];
-  txbuffer[0] = reg & 0x7f;   // 0x7f is 01111111, which is the write bit
-  txbuffer[1] = data;
+int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp, uint16_t len)
+{
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(hspi, txbuffer, 2, HAL_MAX_DELAY);
-  HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+    uint8_t tx_buf[1] = { reg & 0x7F }; // Write operation
+    HAL_SPI_Transmit(handle, tx_buf, 1, HAL_MAX_DELAY);
+    HAL_SPI_Transmit(handle, (uint8_t*)bufp, len, HAL_MAX_DELAY);
+
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_SET);
+    return 0;
 }
 
-uint8_t lsm6dsr_readreg(SPI_HandleTypeDef *hspi, GPIO_TypeDef* CS_PORT, uint16_t CS_PIN, uint8_t reg){
-  uint8_t txbuffer[2];
-  uint8_t rxbuffer[2];
-  txbuffer[0] = reg | 0x80;   // 0x80 is 10000000, which is the read bit
-  txbuffer[1] = 0;
+int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp, uint16_t len)
+{
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
-  HAL_SPI_TransmitReceive(hspi, txbuffer, rxbuffer, 2, HAL_MAX_DELAY);
-  HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+    uint8_t tx_buf[1] = { reg | 0x80 }; // Read operation
+    HAL_SPI_Transmit(handle, tx_buf, 1, HAL_MAX_DELAY);
+    HAL_SPI_Receive(handle, bufp, len, HAL_MAX_DELAY);
 
-  return rxbuffer[1];
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_SET);
+    return 0;
 }
 
 /*
@@ -198,6 +200,8 @@ int main(void)
   // Setup lsm6dsr_ctx correctly for thios device setup
   lsm6dsr_ctx.handle = &hspi1;
   lsm6dsr_ctx.mdelay = HAL_Delay;
+  lsm6dsr_ctx.write_reg = platform_write;
+  lsm6dsr_ctx.read_reg = platform_read;
 
   /* USER CODE END 2 */
 
@@ -207,8 +211,9 @@ int main(void)
   {
     
     // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
-    // lsm6dsr_device_id_get(&lsm6dsr_ctx, &whoami);
-    whoami = lsm6dsr_readreg(&hspi1, Chip_Select_GPIO_Port, Chip_Select_Pin, LSM6DSR_WHO_AM_I);
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_RESET);
+    lsm6dsr_device_id_get(&lsm6dsr_ctx, &whoami);
+    HAL_GPIO_WritePin(Chip_Select_GPIO_Port, Chip_Select_Pin, GPIO_PIN_RESET);
 
     if (whoami == 0x6b){
       printf("Success! Who am I register value: 0x%x\r\n", whoami);
@@ -296,7 +301,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
