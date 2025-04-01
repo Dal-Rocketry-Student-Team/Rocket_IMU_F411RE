@@ -191,17 +191,25 @@ int main(void)
 
   // int increment = 7500;
 
-  // Contains the value read from the specified register
+  // variables to manage data retrieval
+  uint8_t dataReady = 0;
+  // There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
+  uint16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
+  float accel_g[3] = {0}, gyro_dps[3] = {0};
   uint8_t whoami = 0;
-
-  int correct = 0;
-  int incorrect = 0;
 
   // Setup lsm6dsr_ctx correctly for thios device setup
   lsm6dsr_ctx.handle = &hspi1;
   lsm6dsr_ctx.mdelay = HAL_Delay;
   lsm6dsr_ctx.write_reg = platform_write;
   lsm6dsr_ctx.read_reg = platform_read;
+
+  // Setting up lsm6dsr to putput data
+  lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
+  lsm6dsr_xl_data_rate_set(&lsm6dsr_ctx, LSM6DSR_XL_ODR_104Hz);
+  lsm6dsr_gy_data_rate_set(&lsm6dsr_ctx, LSM6DSR_GY_ODR_104Hz);
+  lsm6dsr_xl_full_scale_set(&lsm6dsr_ctx, LSM6DSR_2g);
+  lsm6dsr_gy_full_scale_set(&lsm6dsr_ctx, LSM6DSR_500dps);
 
   /* USER CODE END 2 */
 
@@ -211,16 +219,29 @@ int main(void)
   {
     
     // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
-    lsm6dsr_device_id_get(&lsm6dsr_ctx, &whoami);
+    
+    lsm6dsr_xl_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
+    if (dataReady){
+      lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, &accel_raw);
+      accel_g[0] = lsm6dsr_from_fs16g_to_mg(accel_raw[0]);
+      accel_g[1] = lsm6dsr_from_fs16g_to_mg(accel_raw[1]);
+      accel_g[2] = lsm6dsr_from_fs16g_to_mg(accel_raw[2]);
+      dataReady = 0;
+    }
 
-    if (whoami == 0x6b){
-      printf("Success! Who am I register value: 0x%x\r\n", whoami);
-      correct ++;
+    lsm6dsr_gy_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
+    if (dataReady){
+      lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
+      gyro_dps[0] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[0]);
+      gyro_dps[1] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[1]);
+      gyro_dps[2] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[2]);
+      dataReady = 0;
     }
-    else {
-      printf("Error! Who am I register value: 0x%x\r\n", whoami);
-      incorrect ++;
-    }
+
+    // Print the retrieved data to putty terminal
+    printf("Accel [mg]: %12.2f, %12.2f, %12.2f || Gyro [mdps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
+
+    HAL_Delay(500); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 

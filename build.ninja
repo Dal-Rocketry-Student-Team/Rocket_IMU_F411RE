@@ -49,6 +49,14 @@ cmake_ninja_workdir = C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ s
 
 build cmake_object_order_depends_target_Rocket_IMU_F411RE: phony || CMakeFiles/Rocket_IMU_F411RE.dir
 
+build CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/lsm6dsr_reg.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Core/Src/lsm6dsr_reg.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
+  DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
+  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Core\Src\lsm6dsr_reg.c.obj.d
+  FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g -std=gnu11
+  INCLUDES = -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Core/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+  OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
+  OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Core\Src
+
 build CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/main.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Core/Src/main.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
   DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
   DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Core\Src\main.c.obj.d
@@ -73,9 +81,9 @@ build CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/stm32f4xx_hal_msp.c.obj: C_COMPI
   OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
   OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Core\Src
 
-build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
+build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
   DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
-  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c.obj.d
+  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_spi.c.obj.d
   FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g -std=gnu11
   INCLUDES = -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Core/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
   OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
@@ -185,6 +193,30 @@ build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4x
   OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
   OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src
 
+build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
+  DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
+  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim.c.obj.d
+  FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g -std=gnu11
+  INCLUDES = -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Core/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+  OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
+  OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src
+
+build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
+  DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
+  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_tim_ex.c.obj.d
+  FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g -std=gnu11
+  INCLUDES = -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Core/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+  OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
+  OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src
+
+build CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
+  DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
+  DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src\stm32f4xx_hal_uart.c.obj.d
+  FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g -std=gnu11
+  INCLUDES = -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Core/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Device/ST/STM32F4xx/Include" -I"C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/stm32cubemx/../../Drivers/CMSIS/Include"
+  OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
+  OBJECT_FILE_DIR = CMakeFiles\Rocket_IMU_F411RE.dir\Drivers\STM32F4xx_HAL_Driver\Src
+
 build CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/system_stm32f4xx.c.obj: C_COMPILER__Rocket_IMU_F411RE_unscanned_Debug C$:/Users/Lenovo/OneDrive$ -$ Dalhousie$ University/Dal$ stuff/DSS$ Rocketry$ Stuff/Avionics$ Development/Rocket_IMU_F411RE/Core/Src/system_stm32f4xx.c || cmake_object_order_depends_target_Rocket_IMU_F411RE
   DEFINES = -DDEBUG -DSTM32F411xE -DUSE_HAL_DRIVER
   DEP_FILE = CMakeFiles\Rocket_IMU_F411RE.dir\Core\Src\system_stm32f4xx.c.obj.d
@@ -225,8 +257,9 @@ build CMakeFiles/Rocket_IMU_F411RE.dir/startup_stm32f411xe.s.obj: ASM_COMPILER__
 #############################################
 # Link the executable Rocket_IMU_F411RE.elf
 
-build Rocket_IMU_F411RE.elf: C_EXECUTABLE_LINKER__Rocket_IMU_F411RE_Debug CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/main.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/stm32f4xx_it.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/stm32f4xx_hal_msp.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/system_stm32f4xx.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/sysmem.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/syscalls.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/startup_stm32f411xe.s.obj
+build Rocket_IMU_F411RE.elf: C_EXECUTABLE_LINKER__Rocket_IMU_F411RE_Debug CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/lsm6dsr_reg.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/main.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/stm32f4xx_it.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/stm32f4xx_hal_msp.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_flash_ramfunc.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/system_stm32f4xx.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/sysmem.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/Core/Src/syscalls.c.obj CMakeFiles/Rocket_IMU_F411RE.dir/startup_stm32f411xe.s.obj
   FLAGS = -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard  -Wall -Wextra -Wpedantic -fdata-sections -ffunction-sections -O0 -g3 -g
+  LINK_FLAGS = "-u _printf_float"
   OBJECT_DIR = CMakeFiles\Rocket_IMU_F411RE.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
@@ -238,7 +271,7 @@ build Rocket_IMU_F411RE.elf: C_EXECUTABLE_LINKER__Rocket_IMU_F411RE_Debug CMakeF
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake-gui.exe -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake-gui.exe -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -250,7 +283,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake.exe --regenerate-during-build -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake.exe --regenerate-during-build -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
@@ -267,7 +300,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # Utility command for edit_cache
 
 build cmake/stm32cubemx/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE\cmake\stm32cubemx" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake-gui.exe -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE\cmake\stm32cubemx" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake-gui.exe -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
   DESC = Running CMake cache editor...
   pool = console
   restat = 1
@@ -279,7 +312,7 @@ build cmake/stm32cubemx/edit_cache: phony cmake/stm32cubemx/CMakeFiles/edit_cach
 # Utility command for rebuild_cache
 
 build cmake/stm32cubemx/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE\cmake\stm32cubemx" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake.exe --regenerate-during-build -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D "C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE\cmake\stm32cubemx" && E:\ST\STM32CubeCLT_1.17.0\CMake\bin\cmake.exe --regenerate-during-build -S"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE" -B"C:\Users\Lenovo\OneDrive - Dalhousie University\Dal stuff\DSS Rocketry Stuff\Avionics Development\Rocket_IMU_F411RE""
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1
