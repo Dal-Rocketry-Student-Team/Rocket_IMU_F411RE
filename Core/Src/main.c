@@ -206,11 +206,18 @@ int main(void)
 
   // Setting up lsm6dsr to putput data
   lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
-  lsm6dsr_xl_data_rate_set(&lsm6dsr_ctx, LSM6DSR_XL_ODR_104Hz);
-  lsm6dsr_gy_data_rate_set(&lsm6dsr_ctx, LSM6DSR_GY_ODR_104Hz);
-  lsm6dsr_xl_full_scale_set(&lsm6dsr_ctx, LSM6DSR_2g);
+  lsm6dsr_xl_data_rate_set(&lsm6dsr_ctx, LSM6DSR_XL_ODR_1666Hz);
+  lsm6dsr_gy_data_rate_set(&lsm6dsr_ctx, LSM6DSR_GY_ODR_1666Hz);
+  lsm6dsr_xl_full_scale_set(&lsm6dsr_ctx, LSM6DSR_8g);
   lsm6dsr_gy_full_scale_set(&lsm6dsr_ctx, LSM6DSR_500dps);
 
+  // Perform self tests on the accelerometer and gyroscope
+  lsm6dsr_xl_self_test_set(&lsm6dsr_ctx, LSM6DSR_XL_ST_POSITIVE);
+  lsm6dsr_gy_self_test_set(&lsm6dsr_ctx, LSM6DSR_GY_ST_POSITIVE);
+
+  // Enable Low Pass Filter 1 on the accelerometer and gyroscope
+  lsm6dsr_xl_filter_lp2_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
+  lsm6dsr_gy_filter_lp1_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -223,25 +230,25 @@ int main(void)
     lsm6dsr_xl_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
     if (dataReady){
       lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, &accel_raw);
-      accel_g[0] = lsm6dsr_from_fs16g_to_mg(accel_raw[0]);
-      accel_g[1] = lsm6dsr_from_fs16g_to_mg(accel_raw[1]);
-      accel_g[2] = lsm6dsr_from_fs16g_to_mg(accel_raw[2]);
+      accel_g[0] = lsm6dsr_from_fs8g_to_mg(accel_raw[0]);
+      accel_g[1] = lsm6dsr_from_fs8g_to_mg(accel_raw[1]);
+      accel_g[2] = lsm6dsr_from_fs8g_to_mg(accel_raw[2]);
       dataReady = 0;
     }
 
     lsm6dsr_gy_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
     if (dataReady){
       lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
-      gyro_dps[0] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[0]);
-      gyro_dps[1] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[1]);
-      gyro_dps[2] = lsm6dsr_from_fs2000dps_to_mdps(gyro_raw[2]);
+      gyro_dps[0] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[0]);
+      gyro_dps[1] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1]);
+      gyro_dps[2] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2]);
       dataReady = 0;
     }
 
     // Print the retrieved data to putty terminal
     printf("Accel [mg]: %12.2f, %12.2f, %12.2f || Gyro [mdps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
 
-    HAL_Delay(500); // Delay to avoid pinning of the cpu
+    HAL_Delay(100); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 

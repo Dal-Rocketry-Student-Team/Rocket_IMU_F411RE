@@ -1155,10 +1155,10 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "The CMake toolchain file"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "FILEPATH",
+			"type" : "UNINITIALIZED",
 			"value" : "C:/Users/Lenovo/OneDrive - Dalhousie University/Dal stuff/DSS Rocketry Stuff/Avionics Development/Rocket_IMU_F411RE/cmake/gcc-arm-none-eabi.cmake"
 		},
 		{
