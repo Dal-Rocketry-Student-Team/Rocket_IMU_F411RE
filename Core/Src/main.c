@@ -248,7 +248,7 @@ int main(void)
     // Print the retrieved data to putty terminal
     printf("Accel [mg]: %12.2f, %12.2f, %12.2f || Gyro [mdps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
 
-    HAL_Delay(100); // Delay to avoid pinning of the cpu
+    HAL_Delay(50); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 
