@@ -204,16 +204,31 @@ int main(void)
   lsm6dsr_ctx.write_reg = platform_write;
   lsm6dsr_ctx.read_reg = platform_read;
 
-  // Setting up lsm6dsr to putput data
-  lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
-  lsm6dsr_xl_data_rate_set(&lsm6dsr_ctx, LSM6DSR_XL_ODR_1666Hz);
-  lsm6dsr_gy_data_rate_set(&lsm6dsr_ctx, LSM6DSR_GY_ODR_1666Hz);
-  lsm6dsr_xl_full_scale_set(&lsm6dsr_ctx, LSM6DSR_8g);
-  lsm6dsr_gy_full_scale_set(&lsm6dsr_ctx, LSM6DSR_500dps);
-
   // Perform self tests on the accelerometer and gyroscope
   lsm6dsr_xl_self_test_set(&lsm6dsr_ctx, LSM6DSR_XL_ST_POSITIVE);
   lsm6dsr_gy_self_test_set(&lsm6dsr_ctx, LSM6DSR_GY_ST_POSITIVE);
+  HAL_Delay(50); // Wait for the self test to complete
+  lsm6dsr_xl_self_test_set(&lsm6dsr_ctx, LSM6DSR_XL_ST_DISABLE);
+  lsm6dsr_gy_self_test_set(&lsm6dsr_ctx, LSM6DSR_GY_ST_DISABLE);
+
+  /*----------Device Reset-----------*/
+  lsm6dsr_reset_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
+  uint8_t rst;
+  do {
+    lsm6dsr_reset_get(&lsm6dsr_ctx, &rst);
+  } while (rst);
+
+  /*---------------Run Time Settings--------------*/
+  lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
+
+  // Enable high performance mode
+  lsm6dsr_xl_power_mode_set(&lsm6dsr_ctx, LSM6DSR_HIGH_PERFORMANCE_MD);
+  lsm6dsr_gy_power_mode_set(&lsm6dsr_ctx, LSM6DSR_GY_HIGH_PERFORMANCE);
+
+  lsm6dsr_xl_data_rate_set(&lsm6dsr_ctx, LSM6DSR_XL_ODR_104Hz);
+  lsm6dsr_gy_data_rate_set(&lsm6dsr_ctx, LSM6DSR_GY_ODR_104Hz);
+  lsm6dsr_xl_full_scale_set(&lsm6dsr_ctx, LSM6DSR_8g);
+  lsm6dsr_gy_full_scale_set(&lsm6dsr_ctx, LSM6DSR_500dps);
 
   // Enable Low Pass Filter 1 on the accelerometer and gyroscope
   lsm6dsr_xl_filter_lp2_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
@@ -230,25 +245,25 @@ int main(void)
     lsm6dsr_xl_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
     if (dataReady){
       lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, &accel_raw);
-      accel_g[0] = lsm6dsr_from_fs8g_to_mg(accel_raw[0]);
-      accel_g[1] = lsm6dsr_from_fs8g_to_mg(accel_raw[1]);
-      accel_g[2] = lsm6dsr_from_fs8g_to_mg(accel_raw[2]);
+      accel_g[0] = (lsm6dsr_from_fs8g_to_mg(accel_raw[0])) / 1000.0f;
+      accel_g[1] = (lsm6dsr_from_fs8g_to_mg(accel_raw[1])) / 1000.0f;
+      accel_g[2] = (lsm6dsr_from_fs8g_to_mg(accel_raw[2])) / 1000.0f;
       dataReady = 0;
     }
 
     lsm6dsr_gy_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
     if (dataReady){
       lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
-      gyro_dps[0] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[0]);
-      gyro_dps[1] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1]);
-      gyro_dps[2] = lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2]);
+      gyro_dps[0] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[0])) / 1000.0f;
+      gyro_dps[1] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1])) / 1000.0f;
+      gyro_dps[2] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2])) / 1000.0f;
       dataReady = 0;
     }
 
     // Print the retrieved data to putty terminal
-    printf("Accel [mg]: %12.2f, %12.2f, %12.2f || Gyro [mdps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
+    printf("Accel [g]: %12.2f, %12.2f, %12.2f || Gyro [dps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
 
-    HAL_Delay(50); // Delay to avoid pinning of the cpu
+    HAL_Delay(200); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 
