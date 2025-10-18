@@ -1,45 +1,37 @@
-# Object files
-*.o
-*.ko
-*.obj
+# Build artifacts
+build/
+Debug/
+Release/
 *.elf
-
-# Libraries
-*.lib
-*.a
-*.la
-*.lo
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
 *.hex
-
-# Misc
+*.bin
 *.map
-*.m
-*.png
+*.o
+*.d
+*.su
+*.srec
 
-# Eclipse CDT project files
-.cproject
-.project
-.settings/
+# STM32CubeMX generated files (if not using Makefile project)
+# If you are using a Makefile project, some of these might be needed.
+# Consider what files are essential for your specific project setup.
+EWARM/
+MDK-ARM/
+SW4STM32/
 
-# Vagrant directory
-.vagrant/
+# VS Code specific files
+.vscode/
+.history/
+*.code-workspace
 
-# Include makefiles
-!Makefile
+# Dependency directories (if using external libraries not tracked by Git)
+# Example: if you copy libraries into a 'Libs' folder
+Libs/
+
+# Other common ignored files
+*.log
+*.bak
+*.tmp
 *~
-
-# Libraries
-/lib
+# Operating System generated files
+.DS_Store
+Thumbs.db

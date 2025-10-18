@@ -1,5 +1,4 @@
 {
-    "version": 4,
     "configurations": [
         {
             "name": "STM32",
@@ -8,7 +7,9 @@
             "includePath": [
                 "${default}",
                 "${workspaceFolder}/Core/Inc"
-            ]
+            ],
+            "compileCommands": "${workspaceFolder}/build/Debug/compile_commands.json"
         }
-    ]
+    ],
+    "version": 4
 }

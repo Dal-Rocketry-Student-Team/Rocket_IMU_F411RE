@@ -26,6 +26,7 @@
 #include <string.h>
 
 #include "lsm6dsr_reg.h" // LSM6DSR driver header file
+#include "MadgwickAHRS.h" // Madgwick AHRS algorithm header file
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -191,12 +192,9 @@ int main(void)
 
   // int increment = 7500;
 
-  // variables to manage data retrieval
-  uint8_t dataReady = 0;
   // There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
   uint16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
   float accel_g[3] = {0}, gyro_dps[3] = {0};
-  uint8_t whoami = 0;
 
   // Setup lsm6dsr_ctx correctly for thios device setup
   lsm6dsr_ctx.handle = &hspi1;
@@ -207,7 +205,7 @@ int main(void)
   // Perform self tests on the accelerometer and gyroscope
   lsm6dsr_xl_self_test_set(&lsm6dsr_ctx, LSM6DSR_XL_ST_POSITIVE);
   lsm6dsr_gy_self_test_set(&lsm6dsr_ctx, LSM6DSR_GY_ST_POSITIVE);
-  HAL_Delay(50); // Wait for the self test to complete
+  HAL_Delay(500); // Wait for the self test to complete
   lsm6dsr_xl_self_test_set(&lsm6dsr_ctx, LSM6DSR_XL_ST_DISABLE);
   lsm6dsr_gy_self_test_set(&lsm6dsr_ctx, LSM6DSR_GY_ST_DISABLE);
 
@@ -233,6 +231,7 @@ int main(void)
   // Enable Low Pass Filter 1 on the accelerometer and gyroscope
   lsm6dsr_xl_filter_lp2_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
   lsm6dsr_gy_filter_lp1_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
+  lsm6dsr_gy_hp_path_internal_set(&lsm6dsr_ctx, LSM6DSR_HP_FILTER_16mHz);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -241,29 +240,29 @@ int main(void)
   {
     
     // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
+
+    lsm6dsr_status_reg_t status;
+    lsm6dsr_status_reg_get(&lsm6dsr_ctx, &status);
     
-    lsm6dsr_xl_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
-    if (dataReady){
+    if (status.xlda && status.gda) {
+      // If both accelerometer and gyroscope data are ready, retrieve the data
       lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, &accel_raw);
+      lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
+
       accel_g[0] = (lsm6dsr_from_fs8g_to_mg(accel_raw[0])) / 1000.0f;
       accel_g[1] = (lsm6dsr_from_fs8g_to_mg(accel_raw[1])) / 1000.0f;
       accel_g[2] = (lsm6dsr_from_fs8g_to_mg(accel_raw[2])) / 1000.0f;
-      dataReady = 0;
-    }
 
-    lsm6dsr_gy_flag_data_ready_get(&lsm6dsr_ctx, &dataReady);
-    if (dataReady){
-      lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
       gyro_dps[0] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[0])) / 1000.0f;
       gyro_dps[1] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1])) / 1000.0f;
       gyro_dps[2] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2])) / 1000.0f;
-      dataReady = 0;
+
     }
 
     // Print the retrieved data to putty terminal
-    printf("Accel [g]: %12.2f, %12.2f, %12.2f || Gyro [dps]: %12.2f, %12.2f, %12.2f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
+    printf("Accel [g]: %12.3f, %12.3f, %12.3f || Gyro [dps]: %12.3f, %12.3f, %12.3f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
 
-    HAL_Delay(200); // Delay to avoid pinning of the cpu
+    HAL_Delay(100); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 
