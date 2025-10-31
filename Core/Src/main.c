@@ -181,7 +181,7 @@ static inline float DWT_GetDeltaSeconds(uint32_t *last){
   return (float)diff / (float)SystemCoreClock;
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM__HandleTypeDef *htim){
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
   if(htim->Instance == TIM3){
     fusion_tick = 1;    // Becauase the TIM3 interrupts at the rate of 500Hz, this tick is set every 2ms (every 500 Hz)
   }
