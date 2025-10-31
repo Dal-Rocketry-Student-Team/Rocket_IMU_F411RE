@@ -193,7 +193,7 @@ int main(void)
   // int increment = 7500;
 
   // There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
-  uint16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
+  int16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
   float accel_g[3] = {0}, gyro_dps[3] = {0};
 
   // Setup lsm6dsr_ctx correctly for thios device setup
@@ -246,8 +246,8 @@ int main(void)
     
     if (status.xlda && status.gda) {
       // If both accelerometer and gyroscope data are ready, retrieve the data
-      lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, &accel_raw);
-      lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, &gyro_raw);
+      lsm6dsr_acceleration_raw_get(&lsm6dsr_ctx, (int16_t*)accel_raw);
+      lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, (int16_t*)gyro_raw);
 
       accel_g[0] = (lsm6dsr_from_fs8g_to_mg(accel_raw[0])) / 1000.0f;
       accel_g[1] = (lsm6dsr_from_fs8g_to_mg(accel_raw[1])) / 1000.0f;
