@@ -24,9 +24,11 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <math.h>
 
 #include "lsm6dsr_reg.h" // LSM6DSR driver header file
 #include "MadgwickAHRS.h" // Madgwick AHRS algorithm header file
+#include "stm32f411xe.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,6 +38,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+// Conversion factors
+#define RAD2DEG (57.29577951308232f)
+#define DEG2RAD (0.0174532925199433f)
 
 /* USER CODE END PD */
 
@@ -48,10 +54,29 @@
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim2;
+TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+//======= Making an instance of the ctx_t struct to use in accessing the lsm6dsr =======//
+extern stmdev_ctx_t lsm6dsr_ctx;  // Defined in lsm6dsr_reg.c
+
+// Fusion algorithm timing tick
+volatile uint8_t fusion_tick = 0; // Set to 1 in TIM3 interrupt at 500Hz rate
+
+// Gyro bias values in rad/s
+static float gyro_bias[3] = {0};
+
+// Quaternion components
+extern volatile float q0, q1, q2, q3;
+
+// To hold the status register data
+lsm6dsr_status_reg_t status;  
+
+// 500 Hz / 5 = 100 Hz UART
+static uint8_t telem_div = 0;   
 
 /* USER CODE END PV */
 
@@ -61,6 +86,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_TIM3_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -142,15 +168,63 @@ void Servo_Sweep_Demo(TIM_HandleTypeDef *htim, uint32_t Channel)
     }
 }
 
+static inline void DWT_Init(void){
+  CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk; // Enable TRC
+  DWT->CYCCNT = 0; // Reset the cycle counter
+  DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; // Enable the cycle counter
+}
+
+static inline float DWT_GetDeltaSeconds(uint32_t *last){
+  uint32_t now = DWT->CYCCNT;
+  uint32_t diff = now - *last;
+  *last = now;
+  return (float)diff / (float)SystemCoreClock;
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM__HandleTypeDef *htim){
+  if(htim->Instance == TIM3){
+    fusion_tick = 1;    // Becauase the TIM3 interrupts at the rate of 500Hz, this tick is set every 2ms (every 500 Hz)
+  }
+}
+
+static void CalibrateGyro(uint16_t samples){
+  int32_t sx=0, sy=0, sz=0;
+  for(uint16_t i=0;i<samples;i++){
+    int16_t g[3];
+    lsm6dsr_angular_rate_raw_get(&lsm6dsr_ctx, g);
+    sx += g[0]; sy += g[1]; sz += g[2];
+    HAL_Delay(2);
+  }
+  // convert mdps -> dps -> rad/s
+  gyro_bias[0] = lsm6dsr_from_fs500dps_to_mdps(sx/(float)samples) * 1e-3f * (float)M_PI/180.0f;
+  gyro_bias[1] = lsm6dsr_from_fs500dps_to_mdps(sy/(float)samples) * 1e-3f * (float)M_PI/180.0f;
+  gyro_bias[2] = lsm6dsr_from_fs500dps_to_mdps(sz/(float)samples) * 1e-3f * (float)M_PI/180.0f;
+}
+
+static inline void quat_integrate_gyro(float *q0, float *q1, float *q2, float *q3, float gx,  float gy, float gz, float dt){
+  // pure gyro integration of quaternion, when accel data cannot be trusted
+  float _q0 = *q0, _q1 = *q1, _q2 = *q2, _q3 = *q3;
+  float q0d = 0.5f * (-_q1 * gx - _q2 * gy - _q3 * gz); // qDot1, which is the rate of change of q0 in time for the quaternion to be updated which is used to integrate over time
+  float q1d = 0.5f * ( _q0 * gx + _q2 * gz - _q3 * gy); // qDot2
+  float q2d = 0.5f * ( _q0 * gy - _q1 * gz + _q3 * gx); // qDot3
+  float q3d = 0.5f * ( _q0 * gz + _q1 * gy - _q2 * gx); // qDot4
+
+  _q0 += q0d * 0.002f; // dt = 2ms (1/500 s)
+  _q1 += q1d * 0.002f;
+  _q2 += q2d * 0.002f;
+  _q3 += q3d * 0.002f;
+
+  float n = 1.0f / sqrt(_q0*_q0 + _q1*_q1 + _q2*_q2 + _q3*_q3); // normalise
+  *q0 = _q0 * n, *q1 = _q1 * n, *q2 = _q2 * n, *q3 = _q3 * n; // store back
+}
+
+
 // To redirect the printf to output to the UART instead so I can see it in putty
 int __io_putchar(int ch)
 {
     HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
     return ch;
 }
-
-// Making an instance of the ctx_t struct to use in accessing the lsm6dsr
-stmdev_ctx_t lsm6dsr_ctx;
 
 /* USER CODE END 0 */
 
@@ -172,6 +246,8 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+  DWT_Init();   // Initialize the DWT cycle counter for precise timing
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -186,11 +262,10 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_SPI1_Init();
+  MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-
-  // int increment = 7500;
 
   // There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
   uint16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
@@ -215,6 +290,9 @@ int main(void)
   do {
     lsm6dsr_reset_get(&lsm6dsr_ctx, &rst);
   } while (rst);
+
+  // Removing bias
+  CalibrateGyro(600); // About ~1.2s of calibration at 2ms delay per sample
 
   /*---------------Run Time Settings--------------*/
   lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
@@ -241,7 +319,6 @@ int main(void)
     
     // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
 
-    lsm6dsr_status_reg_t status;
     lsm6dsr_status_reg_get(&lsm6dsr_ctx, &status);
     
     if (status.xlda && status.gda) {
@@ -259,10 +336,14 @@ int main(void)
 
     }
 
+    if (fusion_tick) {
+
+    }
+
     // Print the retrieved data to putty terminal
     printf("Accel [g]: %12.3f, %12.3f, %12.3f || Gyro [dps]: %12.3f, %12.3f, %12.3f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
 
-    HAL_Delay(100); // Delay to avoid pinning of the cpu
+    // HAL_Delay(100); // Delay to avoid pinning of the cpu
 
     /* USER CODE END WHILE */
 
@@ -412,6 +493,51 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 2 */
   HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 2499;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 79;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
 
 }
 
