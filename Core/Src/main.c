@@ -37,6 +37,9 @@
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
 
+#define DEG2RAD 0.017453292519943295f // Pi / 180
+#define RAD2DEG 57.29577951308232f    // 180 / Pi
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +56,24 @@ TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+volatile uint8_t fusion_tick = 0;
+
+// --- Madgwick globals exposed by the library ---
+extern volatile float q0, q1, q2, q3;      // quaternion (from Madgwick)
+extern volatile float sampleFreq;          // Madgwick internal sample rate
+static float gyro_bias_dps[3] = {0};       // boot-time gyro bias estimate
+
+// There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
+int16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
+float accel_g[3] = {0}, gyro_dps[3] = {0};
+
+// Making an instance of the ctx_t struct to use in accessing the lsm6dsr
+stmdev_ctx_t lsm6dsr_ctx;
+
+// status register to see if new data is available
+lsm6dsr_status_reg_t status;
+
 
 /* USER CODE END PV */
 
@@ -151,8 +172,32 @@ int __io_putchar(int ch)
     return ch;
 }
 
-// Making an instance of the ctx_t struct to use in accessing the lsm6dsr
-stmdev_ctx_t lsm6dsr_ctx;
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM3) {
+      fusion_tick = 1;              // 500 Hz “call Madgwick now”
+  }
+}
+
+static void IMU_CalibrateGyro(stmdev_ctx_t *ctx, float bias_out_dps[3]) {
+    // Assumes the board is held still for ~0.5 s
+    const int N = 200;
+    int32_t sx = 0, sy = 0, sz = 0;
+    int16_t g[3];
+    for (int i = 0; i < N; i++) {
+        lsm6dsr_angular_rate_raw_get(ctx, g);
+        sx += g[0]; sy += g[1]; sz += g[2];
+        HAL_Delay(2); // ~500 ms total
+    }
+    float gx = (float)(sx / N);
+    float gy = (float)(sy / N);
+    float gz = (float)(sz / N);
+    bias_out_dps[0] = lsm6dsr_from_fs500dps_to_mdps((int16_t)gx) / 1000.0f;
+    bias_out_dps[1] = lsm6dsr_from_fs500dps_to_mdps((int16_t)gy) / 1000.0f;
+    bias_out_dps[2] = lsm6dsr_from_fs500dps_to_mdps((int16_t)gz) / 1000.0f;
+}
+
+
 
 /* USER CODE END 0 */
 
@@ -192,12 +237,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);
-
-  // int increment = 7500;
-
-  // There are 3 axes of data for both the accelerometer and gyroscope, each a 16 bit value
-  int16_t accel_raw[3] = {0}, gyro_raw[3] = {0};
-  float accel_g[3] = {0}, gyro_dps[3] = {0};
+  HAL_TIM_Base_Start_IT(&htim3);      // start periodic update IRQ
 
   // Setup lsm6dsr_ctx correctly for thios device setup
   lsm6dsr_ctx.handle = &hspi1;
@@ -218,6 +258,13 @@ int main(void)
   do {
     lsm6dsr_reset_get(&lsm6dsr_ctx, &rst);
   } while (rst);
+
+  // Match Madgwick rate to IMU ODR (you set 104 Hz)
+  sampleFreq = 104.0f;
+
+  // Quick gyro bias while stationary
+  IMU_CalibrateGyro(&lsm6dsr_ctx, gyro_bias_dps);
+
 
   /*---------------Run Time Settings--------------*/
   lsm6dsr_block_data_update_set(&lsm6dsr_ctx, PROPERTY_ENABLE);
@@ -244,7 +291,6 @@ int main(void)
     
     // Servo_Sweep_Demo(&htim2, TIM_CHANNEL_2);
 
-    lsm6dsr_status_reg_t status;
     lsm6dsr_status_reg_get(&lsm6dsr_ctx, &status);
     
     if (status.xlda && status.gda) {
@@ -260,12 +306,21 @@ int main(void)
       gyro_dps[1] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1])) / 1000.0f;
       gyro_dps[2] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2])) / 1000.0f;
 
-    }
+      // Normalize accel in-place (required by Madgwick)
+      float inv = 1.0f / sqrtf(accel_g[0]*accel_g[0] + accel_g[1]*accel_g[1] + accel_g[2]*accel_g[2]);
+      accel_g[0] *= inv;  accel_g[1] *= inv;  accel_g[2] *= inv;
 
-    // Print the retrieved data to putty terminal
-    printf("Accel [g]: %12.3f, %12.3f, %12.3f || Gyro [dps]: %12.3f, %12.3f, %12.3f\r\n", accel_g[0], accel_g[1], accel_g[2], gyro_dps[0], gyro_dps[1], gyro_dps[2]);
+      // Run fusion (IMU variant: gyro in rad/s, accel in g, normalized)
+      MadgwickAHRSupdateIMU(gyro_dps[0]*DEG2RAD, gyro_dps[1]*DEG2RAD, gyro_dps[2]*DEG2RAD,
+                            accel_g[0],         accel_g[1],         accel_g[2]);
 
-    HAL_Delay(100); // Delay to avoid pinning of the cpu
+      // Stream quaternion + sensors (CSV line that your Python can parse)
+      printf("IMU,%lu,%.6f,%.6f,%.6f,%.6f,%.3f,%.3f,%.3f,%.4f,%.4f,%.4f\r\n",
+              (unsigned long)HAL_GetTick(), q0, q1, q2, q3,
+              gyro_dps[0], gyro_dps[1], gyro_dps[2],
+              accel_g[0],  accel_g[1],  accel_g[2]);
+
+    }    
 
     /* USER CODE END WHILE */
 
