@@ -139,7 +139,7 @@ void Servo_SetAngle(TIM_HandleTypeDef *htim, uint32_t Channel, float angle)
 
 void Servo_Sweep_Demo(TIM_HandleTypeDef *htim, uint32_t Channel)
 {
-    const int delay_ms = 10;  // Adjust this for speed of sweep
+    const int delay_ms = 1;  // Adjust this for speed of sweep
     float angle;
 
     // 0° to -90°
