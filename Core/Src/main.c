@@ -142,7 +142,7 @@ void Servo_SetAngle(TIM_HandleTypeDef *htim, uint32_t Channel, float angle)
 
 void Servo_Sweep_Demo(TIM_HandleTypeDef *htim, uint32_t Channel)
 {
-    const int delay_ms = 10;  // Adjust this for speed of sweep
+    const int delay_ms = 1;  // Adjust this for speed of sweep
     float angle;
 
     // 0° to -90°
@@ -334,7 +334,13 @@ int main(void)
       gyro_dps[1] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[1])) / 1000.0f;
       gyro_dps[2] = (lsm6dsr_from_fs500dps_to_mdps(gyro_raw[2])) / 1000.0f;
 
-    }
+      // Normalize accel in-place (required by Madgwick)
+      float inv = 1.0f / sqrtf(accel_g[0]*accel_g[0] + accel_g[1]*accel_g[1] + accel_g[2]*accel_g[2]);
+      accel_g[0] *= inv;  accel_g[1] *= inv;  accel_g[2] *= inv;
+
+      // Run fusion (IMU variant: gyro in rad/s, accel in g, normalized)
+      MadgwickAHRSupdateIMU(gyro_dps[0]*DEG2RAD, gyro_dps[1]*DEG2RAD, gyro_dps[2]*DEG2RAD,
+                            accel_g[0],         accel_g[1],         accel_g[2]);
 
     if (fusion_tick) {
 
