@@ -17,6 +17,8 @@ Release/
 EWARM/
 MDK-ARM/
 SW4STM32/
+Drivers/
+Middlewares/
 
 # VS Code specific files
 .vscode/
