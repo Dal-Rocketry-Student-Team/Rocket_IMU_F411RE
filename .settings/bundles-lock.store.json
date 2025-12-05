@@ -41,6 +41,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=13.3.1+st.1 <13.3.1+st.99999"
         }
       ]
     },
@@ -52,6 +56,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=13.3.1+st.1 <13.3.1+st.99999"
         }
       ]
     },
@@ -63,6 +71,10 @@
         {
           "name": "gnu-tools-for-stm32",
           "version": "13.3.1+st.9"
+        },
+        {
+          "name": "gnu-tools-for-stm32",
+          "version": ">=13.3.1+st.1 <13.3.1+st.99999"
         }
       ]
     },
@@ -140,6 +152,83 @@
         {
           "name": "programmer",
           "version": "^2.20.0"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang",
+      "version": "19.1.6+st.9",
+      "platform": "aarch64-darwin",
+      "selected_by": [
+        {
+          "name": "st-arm-clang",
+          "version": ">=19.1.6+st.1 <19.1.6+st.99999"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang",
+      "version": "19.1.6+st.9",
+      "platform": "x86_64-darwin",
+      "selected_by": [
+        {
+          "name": "st-arm-clang",
+          "version": ">=19.1.6+st.1 <19.1.6+st.99999"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang",
+      "version": "19.1.6+st.9",
+      "platform": "x86_64-linux",
+      "selected_by": [
+        {
+          "name": "st-arm-clang",
+          "version": ">=19.1.6+st.1 <19.1.6+st.99999"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang",
+      "version": "19.1.6+st.9",
+      "platform": "x86_64-windows",
+      "selected_by": [
+        {
+          "name": "st-arm-clang",
+          "version": ">=19.1.6+st.1 <19.1.6+st.99999"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang-19_1_6-description",
+      "version": "0.0.4+st.1",
+      "platform": "all",
+      "selected_by": [
+        {
+          "name": "st-arm-clang-19_1_6-description",
+          "version": ">=0.0.1"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang-hybrid",
+      "version": "19.1.6+st.2",
+      "platform": "all",
+      "selected_by": [
+        {
+          "name": "st-arm-clang-hybrid",
+          "version": "19.1.6+st.2"
+        }
+      ]
+    },
+    {
+      "name": "st-arm-clang-hybrid-19_1_6-description",
+      "version": "0.0.5+st.1",
+      "platform": "all",
+      "selected_by": [
+        {
+          "name": "st-arm-clang-hybrid-19_1_6-description",
+          "version": ">=0.0.1"
         }
       ]
     },
